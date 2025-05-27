@@ -104,8 +104,9 @@ typedef struct {
     float z;
 } Vertex3D;
 
-typedef struct {
-    uint8_t v0, v1, v2;
+typedef union {
+    uint8_t v[3];
+    struct { uint8_t v0, v1, v2; };
 } Face8;
 
 typedef struct {
@@ -151,6 +152,8 @@ int OBJ_Model_parse(const char *filename, OBJ_Model *model)
 {
     FILE *fd;
     char buffer[256];
+    char *token;
+    int vIdx;
 
     fd = fopen(filename, "r");
    
@@ -174,15 +177,23 @@ int OBJ_Model_parse(const char *filename, OBJ_Model *model)
 
         if (buffer[0] == 'f' && buffer[1] == ' ') {
             Face8 face;
+            vIdx = 0;
 
-            if (sscanf(buffer, "f %d/%d/%d", &face.v0, &face.v1, &face.v2)) {
-                face.v0--; face.v1--; face.v2--; // OBJ indices start at 1
-                OBJ_Model_add_face(model, face);
+            token = strtok(buffer, " \t\n\r");
+            // Skip the 'f'
+            token = strtok(NULL, " \t\n\r");
+            while (token) {
+                int v = 0, vt = 0, vn = 0;
+                if (sscanf(token, "%d/%d/%d", &v, &vt, &vn)) {
+                    face.v[vIdx++] = v-1; // OBJ indices start at 1
+                }
 
-                printf("Parsed %d->%d->%d,\n",face.v0, face.v1, face.v2);
-            } else {
-                fprintf(stderr, "Failed to parse face: %s", buffer);
+                token = strtok(NULL, " \t\n\r");
             }
+                                
+            OBJ_Model_add_face(model, face);
+
+            printf("Parsed %d->%d->%d,\n", face.v0, face.v1, face.v2);
         }
     }
 }
@@ -243,4 +254,3 @@ int main()
 
     return 0;
 }
-
