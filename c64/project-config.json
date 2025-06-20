@@ -1,0 +1,17 @@
+{
+    "name": "framebuffer",
+    "description": "Framebuffer renderer for c64",
+    "toolkit": "cc65",
+    "sources": [
+        "fb.c"
+    ],
+    "build": "debug",
+    "definitions": [],
+    "includes": [
+        "usr/local/include",
+        "usr/include",
+        "usr/share/cc65/include"
+    ],
+    "args": [],
+    "compiler": ""
+}

@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "tga.h": "c",
+        "stdint.h": "c",
+        "xf86drm.h": "c",
+        "drm.h": "c",
+        "mman.h": "c",
+        "xf86drmmode.h": "c",
+        "cstdio": "c"
+    }
+}
